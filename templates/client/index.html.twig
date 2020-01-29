@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste Clients{% endblock %}
+
+{% block body %}
+    <h1>Client index</h1>
+
+    {% set orderFields = {
+        'id': 'Identifiant',
+        'lastName': 'Nom',
+        'firstName': 'Prénom',
+        'phone': 'Téléphone',
+        'firstCallDate': 'Date de contact',
+        'createdAt': 'Création',
+        'updatedAt': 'Modification',
+    } %}
+    <div>
+            Tri :
+            <form action="">
+                <select name="order">
+                    {% for field, label in orderFields %}
+                        <option value="{{ field }}" {{ app.request.query.get('order') == field ? 'selected="selected"' : ''}}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <select name="order-type">
+                    <option value="asc" {{ app.request.query.get('order-type') == 'asc' ? 'selected="selected"' : ''}}>Croissant</option>
+                    <option value="desc"{{ app.request.query.get('order-type') == 'desc' ? 'selected="selected"' : ''}}>Décroissant</option>
+                </select>
+                <button type="submit">Trier</button>
+            </form>
+        <div>
+    </div>
+
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Identifiant</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Date de prise de contact</th>
+                <th>Créé le</th>
+                <th>Dernière modification</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for client in clients %}
+            <tr>
+                <td>{{ client.id }}</td>
+                <td>{{ client.firstName }}</td>
+                <td>{{ client.lastName }}</td>
+                <td>{{ client.phone }}</td>
+                <td>{{ client.firstCallDate ? client.firstCallDate|date('Y-m-d') : '' }}</td>
+                <td>{{ client.createdAt ? client.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ client.updatedAt ? client.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('client_show', {'id': client.id}) }}">Détails</a>
+                    <a href="{{ path('client_edit', {'id': client.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">Aucun client</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('client_new') }}">Créer</a>
+{% endblock %}
